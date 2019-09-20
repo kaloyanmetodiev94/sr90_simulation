@@ -30,7 +30,7 @@
 
 #include "B2bDetectorConstruction.hh"
 #include "B2ActionInitialization.hh"
-#include "PhysicsList.hh"
+//#include "PhysicsList.hh"
 
 #ifdef G4MULTITHREADED
 #include "G4MTRunManager.hh"
@@ -39,7 +39,8 @@
 #endif
 
 #include "G4UImanager.hh"
-#include "FTFP_BERT.hh"
+#include "QGSP_BERT_HP.hh"
+#include "LBE.hh"
 #include "G4StepLimiterPhysics.hh"
 
 #include "Randomize.hh"
@@ -73,11 +74,12 @@ int main(int argc,char** argv)
   //
   runManager->SetUserInitialization(new B2bDetectorConstruction());
 
-  G4VModularPhysicsList* physicsList = new FTFP_BERT;
-  PhysicsList* phys = new PhysicsList();
+  //G4VModularPhysicsList* physicsList = new QGSP_BERT_HP;
+   G4VModularPhysicsList* physicsList = new LBE;
+  //PhysicsList* phys = new PhysicsList();
   physicsList->RegisterPhysics(new G4StepLimiterPhysics());
   runManager->SetUserInitialization(physicsList);
-  runManager->SetUserInitialization(phys);
+  //runManager->SetUserInitialization(phys);
     
   // Set user action classes
   runManager->SetUserInitialization(new B2ActionInitialization());
