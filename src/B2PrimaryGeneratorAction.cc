@@ -68,7 +68,7 @@ B2PrimaryGeneratorAction::~B2PrimaryGeneratorAction()
 void B2PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
   if (fParticleGun->GetParticleDefinition() == G4Geantino::Geantino()) {  
-    G4int Z = 38, A = 94;
+    G4int Z = 38, A = 90;
     G4double ionCharge   = 0.*eplus;
     G4double excitEnergy = 0.*keV;
     
