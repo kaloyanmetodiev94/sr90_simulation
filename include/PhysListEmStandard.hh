@@ -23,63 +23,40 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: B2PrimaryGeneratorAction.cc 66536 2012-12-19 14:32:36Z ihrivnac $
+/// \file electromagnetic/TestEm0/include/PhysListEmStandard.hh
+/// \brief Definition of the PhysListEmStandard class
 //
-/// \file B2PrimaryGeneratorAction.cc
-/// \brief Implementation of the B2PrimaryGeneratorAction class
+//
+// $Id: PhysListEmStandard.hh 98757 2016-08-09 13:58:01Z gcosmo $
+//
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-#include "B2PrimaryGeneratorAction.hh"
+#ifndef PhysListEmStandard_h
+#define PhysListEmStandard_h 1
 
-#include "G4LogicalVolumeStore.hh"
-#include "G4LogicalVolume.hh"
-#include "G4Box.hh"
-#include "G4Event.hh"
-#include "G4ParticleGun.hh"
-#include "G4ParticleTable.hh"
-#include "G4ParticleDefinition.hh"
-#include "G4SystemOfUnits.hh"
-#include "G4Geantino.hh"
-#include "Randomize.hh"
+#include "G4VPhysicsConstructor.hh"
+#include "globals.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-B2PrimaryGeneratorAction::B2PrimaryGeneratorAction()
- : G4VUserPrimaryGeneratorAction()
+class PhysListEmStandard : public G4VPhysicsConstructor
 {
-  G4int n_particle = 1;
-  fParticleGun  = new G4ParticleGun(n_particle);
-  //fParticleGun = new G4GeneralParticleSource();
+  public: 
+    PhysListEmStandard(const G4String& name = "standard");
+   ~PhysListEmStandard();
 
-
-  fParticleGun->SetParticleEnergy(0*eV);
-  fParticleGun->SetParticlePosition(G4ThreeVector(0.*cm,0.*cm,0.*cm));
-  fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-B2PrimaryGeneratorAction::~B2PrimaryGeneratorAction()
-{
-  delete fParticleGun;
-}
+  public: 
+    // This method is dummy for physics
+    virtual void ConstructParticle() {};
+ 
+    // This method will be invoked in the Construct() method.
+    // each physics process will be instantiated and
+    // registered to the process manager of each particle type 
+    virtual void ConstructProcess();
+};
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void B2PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
-{
-  if (fParticleGun->GetParticleDefinition() == G4Geantino::Geantino()) {  
-    G4int Z = 38, A = 90;
-    G4double ionCharge   = 0.*eplus;
-    G4double excitEnergy = 0.*keV;
-    
-    G4ParticleDefinition* ion
-       = G4IonTable::GetIonTable()->GetIon(Z,A,excitEnergy);
-    fParticleGun->SetParticleDefinition(ion);
-    fParticleGun->SetParticleCharge(ionCharge);
-  }    
-  //create vertex
-  //   
-  fParticleGun->GeneratePrimaryVertex(anEvent);
-}
+#endif
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

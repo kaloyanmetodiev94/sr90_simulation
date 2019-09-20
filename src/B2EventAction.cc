@@ -88,10 +88,12 @@ void B2EventAction::EndOfEventAction(const G4Event* event)
 		{
 		auto ht = static_cast<B2TrackerHit*>(hc->GetHit(i));
 		G4cout<<"HIT ENERGY/PDG: " << ht->GetEtot() << "/" << ht->GetPDG() << G4endl;
-		anman->FillNtupleIColumn(tupidit,0,event->GetEventID());
-		anman->FillNtupleDColumn(tupidit,1,ht->GetEtot());
-		anman->FillNtupleIColumn(tupidit,2,ht->GetPDG());
-		anman->AddNtupleRow(tupidit);
+		if (ht->GetPDG()==22){
+			anman->FillNtupleIColumn(tupidit,0,event->GetEventID());
+			anman->FillNtupleDColumn(tupidit,1,ht->GetEtot());
+			anman->FillNtupleIColumn(tupidit,2,ht->GetPDG());
+			anman->AddNtupleRow(tupidit);
+			}
 		}
     }
     

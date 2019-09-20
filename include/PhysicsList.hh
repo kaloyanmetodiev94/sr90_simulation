@@ -46,6 +46,10 @@ public:
 public:
   virtual void ConstructParticle();
   virtual void SetCuts();
+
+private:
+    G4VPhysicsConstructor*  fEmPhysicsList;
+    G4String                fEmName;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

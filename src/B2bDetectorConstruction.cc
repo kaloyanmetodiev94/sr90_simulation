@@ -120,7 +120,7 @@ G4VPhysicalVolume* B2bDetectorConstruction::DefineVolumes()
 
   // Sizes of the principal geometrical components (solids)
   
-  G4double targetLength =  0.5*cm; // full length of Target
+  G4double targetLength =  0.1*cm; // full length of Target
   
   G4double trackerLength = 30*cm;
 
@@ -165,8 +165,8 @@ G4VPhysicalVolume* B2bDetectorConstruction::DefineVolumes()
   
   G4ThreeVector positionTarget = G4ThreeVector(0,0,0);
 
-  G4Tubs* targetS
-    = new G4Tubs("target",0,targetRadius,targetLength/2.,0.*deg,360.*deg);
+  G4Sphere* targetS
+    = new G4Sphere("target",targetRadius-targetLength,targetRadius,0,360*deg,0,180*deg);
   fLogicTarget
     = new G4LogicalVolume(targetS, fTargetMaterial,"Target",0,0,0);
   new G4PVPlacement(0,              // no rotation
@@ -205,8 +205,9 @@ G4VPhysicalVolume* B2bDetectorConstruction::DefineVolumes()
   // Visualization attributes
 
   G4VisAttributes* boxVisAtt= new G4VisAttributes(G4Colour(1.0,1.0,1.0));
+  G4VisAttributes* targetVisAtt= new G4VisAttributes(G4Colour(0.72,0.45,0.2));
   worldLV   ->SetVisAttributes(boxVisAtt);  
-  fLogicTarget ->SetVisAttributes(boxVisAtt);
+  fLogicTarget ->SetVisAttributes(targetVisAtt);
   fLogicChamber ->SetVisAttributes(boxVisAtt);
 
 

@@ -35,6 +35,8 @@
 #include "G4SystemOfUnits.hh"
 #include "G4UnitsTable.hh"
 
+#include "PhysListEmStandard.hh"
+
 #include "G4EmStandardPhysics.hh"
 #include "G4EmExtraPhysics.hh"
 #include "G4EmParameters.hh"
@@ -63,7 +65,7 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 PhysicsList::PhysicsList()
-:G4VModularPhysicsList()
+:G4VModularPhysicsList(),fEmPhysicsList(0),fEmName("local")
 {
   G4int verb = 1;
   SetVerboseLevel(verb);
@@ -80,8 +82,17 @@ PhysicsList::PhysicsList()
   new G4UnitDefinition("hour",   "h",   "Time", hour);
   new G4UnitDefinition("day",    "d",   "Time", day);
   new G4UnitDefinition("year",   "y",   "Time", year);
+  //add new units for cross sections
+  // 
+  new G4UnitDefinition( "mm2/g", "mm2/g","Surface/Mass", mm2/g);
+  new G4UnitDefinition( "um2/mg", "um2/mg","Surface/Mass", um*um/mg);
           
   // EM physics
+
+  // EM physics
+  fEmName = G4String("local");
+  fEmPhysicsList = new PhysListEmStandard(fEmName);
+
   RegisterPhysics(new G4EmStandardPhysics());
   G4EmParameters* param = G4EmParameters::Instance();
   param->SetAugerCascade(true);
