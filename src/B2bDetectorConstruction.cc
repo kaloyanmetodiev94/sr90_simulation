@@ -64,7 +64,7 @@ G4GlobalMagFieldMessenger* B2bDetectorConstruction::fMagFieldMessenger = 0;
 B2bDetectorConstruction::B2bDetectorConstruction()
 :G4VUserDetectorConstruction(),
  fLogicTarget(NULL), fLogicChamber(NULL), 
- fTargetMaterial(NULL), fChamberMaterial(NULL), 
+ fTargetMaterial(NULL), fChamberMaterial(NULL), fWorldMaterial(NULL),
  fStepLimit(NULL), 
  fCheckOverlaps(true)
 {
@@ -106,6 +106,7 @@ void B2bDetectorConstruction::DefineMaterials()
 
   // Xenon gas defined using NIST Manager
   fChamberMaterial = nistManager->FindOrBuildMaterial("G4_Galactic");
+  fWorldMaterial = nistManager->FindOrBuildMaterial("G4_Galactic");
 
   // Print materials
   G4cout << *(G4Material::GetMaterialTable()) << G4endl;
@@ -119,14 +120,13 @@ G4VPhysicalVolume* B2bDetectorConstruction::DefineVolumes()
 
   // Sizes of the principal geometrical components (solids)
   
-  G4double targetLength =  5.0*cm; // full length of Target
+  G4double targetLength =  0.5*cm; // full length of Target
   
   G4double trackerLength = 30*cm;
 
   G4double worldLength = 2 * (2*targetLength + trackerLength*1.5);
 
-  G4double targetRadius  = 0.5*targetLength;   // Radius of Target
-  targetLength = 0.5*targetLength;             // Half length of the Target  
+  G4double targetRadius  = 5*cm;   // Radius of Target
 
 
   // Definitions of Solids, Logical Volumes, Physical Volumes
@@ -145,7 +145,7 @@ G4VPhysicalVolume* B2bDetectorConstruction::DefineVolumes()
   G4LogicalVolume* worldLV
     = new G4LogicalVolume(
                  worldS,   //its solid
-                 fChamberMaterial,      //its material
+                 fWorldMaterial,      //its material
                  "World"); //its name
   
   //  Must place the World Physical volume unrotated at (0,0,0).
@@ -166,7 +166,7 @@ G4VPhysicalVolume* B2bDetectorConstruction::DefineVolumes()
   G4ThreeVector positionTarget = G4ThreeVector(0,0,0);
 
   G4Tubs* targetS
-    = new G4Tubs("target",0,targetRadius,targetLength,0.*deg,360.*deg);
+    = new G4Tubs("target",0,targetRadius,targetLength/2.,0.*deg,360.*deg);
   fLogicTarget
     = new G4LogicalVolume(targetS, fTargetMaterial,"Target",0,0,0);
   new G4PVPlacement(0,              // no rotation
@@ -186,28 +186,19 @@ G4VPhysicalVolume* B2bDetectorConstruction::DefineVolumes()
   G4ThreeVector positionTracker = G4ThreeVector(0,0,0);
 
 
-  G4Sphere* trackerS = new G4Sphere("tracker",trackerLength-1*cm,trackerLength,0,360*deg,0,180*deg);
-  //G4Tubs* trackerS = new G4Tubs("tracker",0,trackerSize,trackerSize, 0.*deg, 360.*deg);
-  G4LogicalVolume* trackerLV
-    = new G4LogicalVolume(trackerS, fChamberMaterial, "Tracker",0,0,0);  
+  //G4Tubs* chamberS = new G4Tubs("tracker",0, 100*cm, 100*cm, 0.*deg, 360.*deg);
+  G4Sphere* chamberS = new G4Sphere("tracker",trackerLength-1*cm,trackerLength,0,360*deg,0,180*deg);
+  fLogicChamber 
+    = new G4LogicalVolume(chamberS,fChamberMaterial,"Chamber",0,0,0);
+
   new G4PVPlacement(0,               // no rotation
                     positionTracker, // at (x,y,z)
-                    trackerLV,       // its logical volume
+                    fLogicChamber,       // its logical volume
                     "Tracker",       // its name
                     worldLV,         // its mother  volume
                     false,           // no boolean operations
                     0,               // copy number
                     fCheckOverlaps); // checking overlaps 
-
-  // Tracker segments
-  
-  // An example of Parameterised volumes
-  // Dummy values for G4Tubs -- modified by parameterised volume
-
-  //G4Tubs* chamberS = new G4Tubs("tracker",0, 100*cm, 100*cm, 0.*deg, 360.*deg);
-  G4Sphere* chamberS = new G4Sphere("tracker",trackerLength-1*cm,trackerLength,0,360*deg,0,180*deg);
-  fLogicChamber 
-    = new G4LogicalVolume(chamberS,fChamberMaterial,"Chamber",0,0,0);
 
 
 
@@ -216,7 +207,7 @@ G4VPhysicalVolume* B2bDetectorConstruction::DefineVolumes()
   G4VisAttributes* boxVisAtt= new G4VisAttributes(G4Colour(1.0,1.0,1.0));
   worldLV   ->SetVisAttributes(boxVisAtt);  
   fLogicTarget ->SetVisAttributes(boxVisAtt);
-  trackerLV ->SetVisAttributes(boxVisAtt);
+  fLogicChamber ->SetVisAttributes(boxVisAtt);
 
 
   

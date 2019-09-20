@@ -73,6 +73,7 @@ class B2bDetectorConstruction : public G4VUserDetectorConstruction
 
     G4Material*        fTargetMaterial;  // pointer to the target  material
     G4Material*        fChamberMaterial; // pointer to the chamber material
+    G4Material*        fWorldMaterial;
 
     G4UserLimits*      fStepLimit;       // pointer to user step limits
 

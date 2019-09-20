@@ -64,21 +64,23 @@ class B2TrackerHit : public G4VHit
     // Set methods
     void SetTrackID  (G4int track)      { fTrackID = track; };
     void SetChamberNb(G4int chamb)      { fChamberNb = chamb; };
-    void SetEdep     (G4double de)      { fEdep = de; };
+    void SetEtot    (G4double de)      { fEtot = de; };
     void SetPos      (G4ThreeVector xyz){ fPos = xyz; };
+    void SetPDG (G4int pdg)	{fPDG = pdg;};
 
     // Get methods
     G4int GetTrackID() const     { return fTrackID; };
     G4int GetChamberNb() const   { return fChamberNb; };
-    G4double GetEdep() const     { return fEdep; };
+    G4double GetEtot() const     { return fEtot; };
     G4ThreeVector GetPos() const { return fPos; };
-
+    G4int GetPDG() const {return fPDG;} ;
   private:
 
       G4int         fTrackID;
       G4int         fChamberNb;
-      G4double      fEdep;
+      G4double      fEtot;
       G4ThreeVector fPos;
+      G4int	    fPDG;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

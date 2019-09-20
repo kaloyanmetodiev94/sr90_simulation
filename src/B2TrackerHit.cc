@@ -45,7 +45,7 @@ B2TrackerHit::B2TrackerHit()
  : G4VHit(),
    fTrackID(-1),
    fChamberNb(-1),
-   fEdep(0.),
+   fEtot(0.),
    fPos(G4ThreeVector())
 {}
 
@@ -60,7 +60,7 @@ B2TrackerHit::B2TrackerHit(const B2TrackerHit& right)
 {
   fTrackID   = right.fTrackID;
   fChamberNb = right.fChamberNb;
-  fEdep      = right.fEdep;
+  fEtot      = right.fEtot;
   fPos       = right.fPos;
 }
 
@@ -70,7 +70,7 @@ const B2TrackerHit& B2TrackerHit::operator=(const B2TrackerHit& right)
 {
   fTrackID   = right.fTrackID;
   fChamberNb = right.fChamberNb;
-  fEdep      = right.fEdep;
+  fEtot      = right.fEtot;
   fPos       = right.fPos;
 
   return *this;
@@ -106,8 +106,8 @@ void B2TrackerHit::Print()
 {
   G4cout
      << "  trackID: " << fTrackID << " chamberNb: " << fChamberNb
-     << "Edep: "
-     << std::setw(7) << G4BestUnit(fEdep,"Energy")
+     << "Etot: "
+     << std::setw(7) << G4BestUnit(fEtot,"Energy")
      << " Position: "
      << std::setw(7) << G4BestUnit( fPos,"Length")
      << G4endl;

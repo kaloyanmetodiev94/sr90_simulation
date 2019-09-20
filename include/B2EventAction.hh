@@ -32,19 +32,23 @@
 #define B2EventAction_h 1
 
 #include "G4UserEventAction.hh"
+#include "B2RunAction.hh"
 
 #include "globals.hh"
 
 /// Event action class
 
+
 class B2EventAction : public G4UserEventAction
 {
   public:
-    B2EventAction();
-    virtual ~B2EventAction();
+    B2EventAction(B2RunAction* act);
+    ~B2EventAction();
 
-    virtual void  BeginOfEventAction(const G4Event* );
-    virtual void    EndOfEventAction(const G4Event* );
+    void  BeginOfEventAction(const G4Event* );
+    void    EndOfEventAction(const G4Event* );
+  private:
+	B2RunAction* _runact;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

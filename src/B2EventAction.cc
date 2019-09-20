@@ -30,16 +30,18 @@
 
 #include "B2EventAction.hh"
 
+#include "g4csv.hh"
 #include "G4Event.hh"
 #include "G4EventManager.hh"
 #include "G4TrajectoryContainer.hh"
 #include "G4Trajectory.hh"
 #include "G4ios.hh"
+#include "B2TrackerHit.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-B2EventAction::B2EventAction()
-: G4UserEventAction()
+B2EventAction::B2EventAction(B2RunAction* act)
+: G4UserEventAction(),_runact(act)
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -56,25 +58,44 @@ void B2EventAction::BeginOfEventAction(const G4Event*)
 
 void B2EventAction::EndOfEventAction(const G4Event* event)
 {
+
+  G4int tupidit = _runact->getTupid();
+  G4VAnalysisManager* anman = _runact->getAnman();
+
   // get number of stored trajectories
 
-  G4TrajectoryContainer* trajectoryContainer = event->GetTrajectoryContainer();
-  G4int n_trajectories = 0;
-  if (trajectoryContainer) n_trajectories = trajectoryContainer->entries();
+  //G4TrajectoryContainer* trajectoryContainer = event->GetTrajectoryContainer();
+  //G4int n_trajectories = 0;
+  //if (trajectoryContainer) n_trajectories = trajectoryContainer->entries();
 
   // periodic printing
 
   G4int eventID = event->GetEventID();
-  if ( eventID < 100 || eventID % 100 == 0) {
-    G4cout << ">>> Event: " << eventID  << G4endl;
-    if ( trajectoryContainer ) {
-      G4cout << "    " << n_trajectories
-             << " trajectories stored in this event." << G4endl;
-    }
+  //  G4cout << ">>> Event: " << eventID  << G4endl;
+  //  if ( trajectoryContainer ) {
+  //   G4cout << "    " << n_trajectories << " trajectories stored in this event." << G4endl;
+  //  }
     G4VHitsCollection* hc = event->GetHCofThisEvent()->GetHC(0);
-    G4cout << "    "  
-           << hc->GetSize() << " hits stored in this event" << G4endl;
-  }
+    G4cout << "    " << hc->GetSize() << " hits stored in this event" << G4endl;
+
+
+    if (anman){
+	
+	    auto antp = anman->GetType();
+	    anman->OpenFile();
+
+	    for(auto i=0u; i < hc->GetSize(); i++)
+		{
+		auto ht = static_cast<B2TrackerHit*>(hc->GetHit(i));
+		G4cout<<"HIT ENERGY/PDG: " << ht->GetEtot() << "/" << ht->GetPDG() << G4endl;
+		anman->FillNtupleIColumn(tupidit,0,event->GetEventID());
+		anman->FillNtupleDColumn(tupidit,1,ht->GetEtot());
+		anman->FillNtupleIColumn(tupidit,2,ht->GetPDG());
+		anman->AddNtupleRow(tupidit);
+		}
+    }
+    
+ 
 }  
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

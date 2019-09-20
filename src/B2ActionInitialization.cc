@@ -55,9 +55,10 @@ void B2ActionInitialization::BuildForMaster() const
 
 void B2ActionInitialization::Build() const
 {
+  auto runact = new B2RunAction();
   SetUserAction(new B2PrimaryGeneratorAction);
-  SetUserAction(new B2RunAction);
-  SetUserAction(new B2EventAction);
+  SetUserAction(runact);
+  SetUserAction(new B2EventAction(runact));
 }  
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

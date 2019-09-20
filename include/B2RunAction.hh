@@ -32,11 +32,13 @@
 #define B2RunAction_h 1
 
 #include "G4UserRunAction.hh"
+#include "G4VAnalysisManager.hh"
 #include "globals.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 class G4Run;
+class G4VAnalysisManager;
 
 /// Run action class
 
@@ -46,8 +48,13 @@ class B2RunAction : public G4UserRunAction
     B2RunAction();
     virtual ~B2RunAction();
 
-    virtual void BeginOfRunAction(const G4Run* run);
-    virtual void   EndOfRunAction(const G4Run* run);
+    void BeginOfRunAction(const G4Run* run);
+    void   EndOfRunAction(const G4Run* run);
+    G4VAnalysisManager* getAnman();
+    G4int getTupid();
+  private:
+    G4VAnalysisManager* _anman= nullptr;
+    G4int _tupid;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

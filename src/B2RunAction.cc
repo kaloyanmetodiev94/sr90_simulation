@@ -32,6 +32,9 @@
 
 #include "G4Run.hh"
 #include "G4RunManager.hh"
+#include "g4csv.hh"
+#include <sstream>
+#include "G4SDManager.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -45,19 +48,60 @@ B2RunAction::B2RunAction()
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 B2RunAction::~B2RunAction()
-{}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void B2RunAction::BeginOfRunAction(const G4Run*)
-{ 
-  //inform the runManager to save random number seed
-  G4RunManager::GetRunManager()->SetRandomNumberStore(false);
+{
+   delete G4CsvAnalysisManager::Instance();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void B2RunAction::EndOfRunAction(const G4Run* )
-{}
+void B2RunAction::BeginOfRunAction(const G4Run* run)
+{ 
+  _anman=G4CsvAnalysisManager::Instance();
+  auto runid= run->GetRunID();
+  std::ostringstream oss;
+  oss <<"hits_"<<runid;
+
+  if (_anman){
+	_anman->SetFileName(oss.str());
+	_anman->OpenFile(oss.str());
+  }
+
+  //inform the runManager to save random number seed
+  G4RunManager::GetRunManager()->SetRandomNumberStore(false);
+  auto sdm=G4SDManager::GetSDMpointer();
+  auto hctable=sdm->GetHCtable();
+
+  auto hcname=hctable->GetHCname(0);
+  _tupid = _anman->CreateNtuple(hcname,hcname);
+  _anman->CreateNtupleIColumn(_tupid,"evid");
+  _anman->CreateNtupleDColumn(_tupid,"Etot");
+  _anman->CreateNtupleIColumn(_tupid,"PDG");
+  _anman->FinishNtuple(_tupid);
+  _anman->CloseFile();
+
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B2RunAction::EndOfRunAction(const G4Run* run)
+{
+	if(_anman)
+	{
+	G4cout<<"writing hits to file: " << _anman -> GetFileName() <<G4endl;
+	_anman->Write();
+	_anman->CloseFile();
+
+	}
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+G4VAnalysisManager * B2RunAction::getAnman()
+{
+	return _anman;
+}
+
+G4int B2RunAction::getTupid()
+{
+	return _tupid;
+}

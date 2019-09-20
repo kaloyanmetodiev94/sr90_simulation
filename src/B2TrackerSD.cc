@@ -74,21 +74,28 @@ G4bool B2TrackerSD::ProcessHits(G4Step* aStep,
   // energy deposit
   G4double edep = aStep->GetTotalEnergyDeposit();
 
-  if (edep==0.) return false;
+  auto track = aStep -> GetTrack();
+  if (aStep->GetPreStepPoint()->GetStepStatus()==fGeomBoundary) //if it is just entering
+  {
+	  //G4cout<<"########HIT: "<<track->GetTotalEnergy()<<G4endl; //gives total energy in MeV
+	  B2TrackerHit* newHit = new B2TrackerHit();
 
-  B2TrackerHit* newHit = new B2TrackerHit();
+	  newHit->SetTrackID  (aStep->GetTrack()->GetTrackID());
+	  newHit->SetChamberNb(aStep->GetPreStepPoint()->GetTouchableHandle()
+		                                       ->GetCopyNumber());
+	  newHit->SetEtot(track->GetTotalEnergy());
+	  newHit->SetPos (aStep->GetPostStepPoint()->GetPosition());
+	  newHit->SetPDG (track->GetParticleDefinition()->GetPDGEncoding());
 
-  newHit->SetTrackID  (aStep->GetTrack()->GetTrackID());
-  newHit->SetChamberNb(aStep->GetPreStepPoint()->GetTouchableHandle()
-                                               ->GetCopyNumber());
-  newHit->SetEdep(edep);
-  newHit->SetPos (aStep->GetPostStepPoint()->GetPosition());
+	  fHitsCollection->insert( newHit );
 
-  fHitsCollection->insert( newHit );
+	  //newHit->Print();
 
-  //newHit->Print();
-
-  return true;
+	  return true;
+  }
+  else{
+	return false;
+  }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
