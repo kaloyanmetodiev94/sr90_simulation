@@ -1,0 +1,22 @@
+/gps/verbose 2
+
+#####FOR A SINGLE POINT########
+#/gps/pos/type Point
+#/gps/pos/centre 0 0 -10 cm
+##############################
+
+#####FOR A VOLUME ALONG THE IOFFE TRAP############
+#/gps/pos/type Volume
+#/gps/pos/shape Cylinder
+#/gps/pos/centre 0 0 0 mm
+#/gps/pos/radius 1 mm
+#/gps/pos/halfz 150 mm
+##################################################
+
+/gps/particle ion
+/gps/ion 38 90
+/gps/ene/type Mono
+/gps/ene/mono 0.0 MeV
+/gps/pos/centre 0. 0. -7. cm
+/gps/direction 0. 0. 1.
+

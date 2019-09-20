@@ -30,6 +30,7 @@
 
 #include "B2bDetectorConstruction.hh"
 #include "B2ActionInitialization.hh"
+#include "PhysicsList.hh"
 
 #ifdef G4MULTITHREADED
 #include "G4MTRunManager.hh"
@@ -73,8 +74,10 @@ int main(int argc,char** argv)
   runManager->SetUserInitialization(new B2bDetectorConstruction());
 
   G4VModularPhysicsList* physicsList = new FTFP_BERT;
+  PhysicsList* phys = new PhysicsList();
   physicsList->RegisterPhysics(new G4StepLimiterPhysics());
   runManager->SetUserInitialization(physicsList);
+  runManager->SetUserInitialization(phys);
     
   // Set user action classes
   runManager->SetUserInitialization(new B2ActionInitialization());

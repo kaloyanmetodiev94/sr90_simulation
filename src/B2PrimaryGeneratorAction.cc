@@ -38,7 +38,7 @@
 #include "G4ParticleTable.hh"
 #include "G4ParticleDefinition.hh"
 #include "G4SystemOfUnits.hh"
-
+#include "G4Geantino.hh"
 #include "Randomize.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -46,17 +46,14 @@
 B2PrimaryGeneratorAction::B2PrimaryGeneratorAction()
  : G4VUserPrimaryGeneratorAction()
 {
-  G4int nofParticles = 1;
-  fParticleGun = new G4ParticleGun(nofParticles);
+  G4int n_particle = 1;
+  fParticleGun  = new G4ParticleGun(n_particle);
+  //fParticleGun = new G4GeneralParticleSource();
 
-  // default particle kinematic
 
-  G4ParticleDefinition* particleDefinition 
-    = G4ParticleTable::GetParticleTable()->FindParticle("e-");
-
-  fParticleGun->SetParticleDefinition(particleDefinition);
+  fParticleGun->SetParticleEnergy(0*eV);
+  fParticleGun->SetParticlePosition(G4ThreeVector(0.*cm,0.*cm,-10.*cm));
   fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
-  fParticleGun->SetParticleEnergy(3.0*MeV); //it means KINETIC ENERGY!
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -70,27 +67,18 @@ B2PrimaryGeneratorAction::~B2PrimaryGeneratorAction()
 
 void B2PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
-  // This function is called at the begining of event
-
-  // In order to avoid dependence of PrimaryGeneratorAction
-  // on DetectorConstruction class we get world volume
-  // from G4LogicalVolumeStore.
-
-  G4double worldZHalfLength = 0;
-  G4LogicalVolume* worldLV
-    = G4LogicalVolumeStore::GetInstance()->GetVolume("World");
-  G4Box* worldBox = NULL;
-  if ( worldLV ) worldBox = dynamic_cast<G4Box*>(worldLV->GetSolid());
-  if ( worldBox ) worldZHalfLength = worldBox->GetZHalfLength();
-  else  {
-    G4cerr << "World volume of box not found." << G4endl;
-    G4cerr << "Perhaps you have changed geometry." << G4endl;
-    G4cerr << "The gun will be place in the center." << G4endl;
-  }
-
-  //fParticleGun->SetParticlePosition(G4ThreeVector(0., 0., -worldZHalfLength));
-  fParticleGun->SetParticlePosition(G4ThreeVector(0., 0., -10*cm));
-
+  if (fParticleGun->GetParticleDefinition() == G4Geantino::Geantino()) {  
+    G4int Z = 38, A = 94;
+    G4double ionCharge   = 0.*eplus;
+    G4double excitEnergy = 0.*keV;
+    
+    G4ParticleDefinition* ion
+       = G4IonTable::GetIonTable()->GetIon(Z,A,excitEnergy);
+    fParticleGun->SetParticleDefinition(ion);
+    fParticleGun->SetParticleCharge(ionCharge);
+  }    
+  //create vertex
+  //   
   fParticleGun->GeneratePrimaryVertex(anEvent);
 }
 

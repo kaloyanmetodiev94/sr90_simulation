@@ -51,6 +51,7 @@ set(EXAMPLEB2B_SCRIPTS
   run1.mac
   run2.mac
   vis.mac
+  source.mac
   )
 
 foreach(_script ${EXAMPLEB2B_SCRIPTS})

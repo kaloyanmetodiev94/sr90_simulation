@@ -23,45 +23,29 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: B2PrimaryGeneratorAction.hh 66536 2012-12-19 14:32:36Z ihrivnac $
+/// \file PhysicsList.hh
+/// \brief Definition of the PhysicsList class
 //
-/// \file B2PrimaryGeneratorAction.hh
-/// \brief Definition of the B2PrimaryGeneratorAction class
+// $Id: PhysicsList.hh 66587 2012-12-21 11:06:44Z ihrivnac $
+//
 
-#ifndef B2PrimaryGeneratorAction_h
-#define B2PrimaryGeneratorAction_h 1
+#ifndef PhysicsList_h
+#define PhysicsList_h 1
 
-#include "G4VUserPrimaryGeneratorAction.hh"
+#include "G4VModularPhysicsList.hh"
 #include "globals.hh"
-#include "G4GeneralParticleSource.hh"
-#include "G4IonTable.hh"
 
-class G4ParticleGun;
-class G4Event;
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-/// The primary generator action class with particle gum.
-///
-/// It defines a single particle which hits the Tracker 
-/// perpendicular to the input face. The type of the particle
-/// can be changed via the G4 build-in commands of G4ParticleGun class 
-/// (see the macros provided with this example).
-
-class B2PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
+class PhysicsList: public G4VModularPhysicsList
 {
-  public:
-    B2PrimaryGeneratorAction();    
-    virtual ~B2PrimaryGeneratorAction();
+public:
+  PhysicsList();
+ ~PhysicsList();
 
-    virtual void GeneratePrimaries(G4Event* );
-
-    G4ParticleGun* GetParticleGun() {return fParticleGun;}
-    //G4GeneralParticleSource* GetParticleGun() {return fParticleGun;}
-    // Set methods
-    void SetRandomFlag(G4bool );
-
-  private:
-    G4ParticleGun*          fParticleGun; // G4 particle gun
-    //G4GeneralParticleSource* fParticleGun;
+public:
+  virtual void ConstructParticle();
+  virtual void SetCuts();
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
