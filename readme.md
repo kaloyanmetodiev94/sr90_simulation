@@ -4,7 +4,7 @@ A simple Geant4 simulation of electrons from a supposed Sr90 source onto a coppe
 
 ## Getting Started
 
-###Building
+### Building
 Assuming Geant4 is installed (currently used v10.2)
 
 ```
@@ -14,7 +14,7 @@ cmake ..
 make
 ```
 
-###Runnig
+### Running
 
 ```
 .\exampleB2b
